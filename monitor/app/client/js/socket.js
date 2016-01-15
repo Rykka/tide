@@ -1,4 +1,5 @@
 import store from './store'
+// var store = require('./store')
 var socket = io();
 
 socket.on('client_list' ,(client_list)=> {

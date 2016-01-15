@@ -90,7 +90,7 @@ var App = (function (_React$Component) {
     value: function render() {
       return _react2.default.createElement(
         'div',
-        null,
+        { className: 'app' },
         _react2.default.createElement(
           'h1',
           null,
@@ -98,7 +98,7 @@ var App = (function (_React$Component) {
         ),
         _react2.default.createElement(
           'ul',
-          null,
+          { className: 'navigation' },
           _react2.default.createElement(
             'li',
             null,
@@ -115,6 +115,15 @@ var App = (function (_React$Component) {
               _reactRouter.Link,
               { to: '/about', activeStyle: ACTIVE },
               '/about'
+            )
+          ),
+          _react2.default.createElement(
+            'li',
+            null,
+            _react2.default.createElement(
+              _reactRouter.Link,
+              { to: '/flipper', activeStyle: ACTIVE },
+              '/flipper'
             )
           ),
           _react2.default.createElement(
@@ -139,6 +148,103 @@ exports.default = App;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}],3:[function(require,module,exports){
+(function (global){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _react = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null);
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var App = _react2.default.createClass({
+    displayName: "App",
+
+    getInitialState: function getInitialState() {
+        return {
+            flipped: false
+        };
+    },
+
+    flip: function flip() {
+        this.setState({ flipped: !this.state.flipped });
+    },
+
+    render: function render() {
+        return _react2.default.createElement(
+            "div",
+            null,
+            _react2.default.createElement(Flipper, { flipped: this.state.flipped, orientation: "horizontal" }),
+            _react2.default.createElement(Flipper, { flipped: this.state.flipped, orientation: "vertical" }),
+            _react2.default.createElement(
+                "div",
+                { className: "button-container" },
+                _react2.default.createElement(
+                    "button",
+                    { onClick: this.flip },
+                    "Flip!"
+                )
+            )
+        );
+    }
+});
+
+var Flipper = _react2.default.createClass({
+    displayName: "Flipper",
+
+    render: function render() {
+        return _react2.default.createElement(
+            "div",
+            { className: "flipper-container " + this.props.orientation },
+            _react2.default.createElement(
+                "div",
+                { className: "flipper" + (this.props.flipped ? " flipped" : "") },
+                _react2.default.createElement(
+                    Front,
+                    null,
+                    "the front!"
+                ),
+                _react2.default.createElement(
+                    Back,
+                    null,
+                    "the back!"
+                )
+            )
+        );
+    }
+});
+var Front = _react2.default.createClass({
+    displayName: "Front",
+
+    render: function render() {
+        return _react2.default.createElement(
+            "div",
+            { className: "front tile" },
+            this.props.children
+        );
+    }
+});
+
+var Back = _react2.default.createClass({
+    displayName: "Back",
+
+    render: function render() {
+        return _react2.default.createElement(
+            "div",
+            { className: "back tile" },
+            this.props.children
+        );
+    }
+});
+
+exports.default = App;
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}],4:[function(require,module,exports){
 (function (global){
 "use strict";
 
@@ -172,15 +278,30 @@ var Index = (function (_React$Component) {
   _createClass(Index, [{
     key: "render",
     value: function render() {
+      var messages = this.props.messages;
+
+      console.log(messages);
       return _react2.default.createElement(
         "div",
         null,
         _react2.default.createElement(
           "h2",
           null,
-          "Index!  "
+          "Index!"
         ),
-        _react2.default.createElement("ul", { id: "messages" }),
+        _react2.default.createElement(
+          "ul",
+          { id: "messages" },
+          messages.map(function (elem) {
+            return _react2.default.createElement(
+              "li",
+              { key: elem.mid },
+              elem.name,
+              " : ",
+              elem.msg
+            );
+          })
+        ),
         _react2.default.createElement(
           "form",
           { action: "" },
@@ -206,7 +327,7 @@ var Index = (function (_React$Component) {
 exports.default = Index;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],4:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -298,7 +419,7 @@ var Table = (function (_React$Component) {
 exports.default = Table;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -332,6 +453,10 @@ var _about = require('./comp/about');
 
 var _about2 = _interopRequireDefault(_about);
 
+var _flipper = require('./comp/flipper');
+
+var _flipper2 = _interopRequireDefault(_flipper);
+
 var _store = require('./store');
 
 var _store2 = _interopRequireDefault(_store);
@@ -345,8 +470,14 @@ function selectCLIENT(state) {
         client_list: state.client_list
     };
 }
+function selectMESSAGE(state) {
+    return {
+        messages: state.messages
+    };
+}
 
 var MYTABLE = (0, _reactRedux.connect)(selectCLIENT)(_table2.default);
+var MYINDEX = (0, _reactRedux.connect)(selectMESSAGE)(_index2.default);
 
 (0, _reactDom.render)(_react2.default.createElement(
     _reactRedux.Provider,
@@ -358,14 +489,15 @@ var MYTABLE = (0, _reactRedux.connect)(selectCLIENT)(_table2.default);
             _reactRouter.Route,
             { path: '/', component: _app2.default },
             _react2.default.createElement(_reactRouter.IndexRoute, { component: MYTABLE }),
-            _react2.default.createElement(_reactRouter.Route, { path: '/i', component: _index2.default }),
+            _react2.default.createElement(_reactRouter.Route, { path: '/i', component: MYINDEX }),
+            _react2.default.createElement(_reactRouter.Route, { path: '/flipper', component: _flipper2.default }),
             _react2.default.createElement(_reactRouter.Route, { path: '/about', component: _about2.default })
         )
     )
 ), (0, _jquery2.default)('#example').get(0));
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./comp/about":1,"./comp/app":2,"./comp/index":3,"./comp/table":4,"./socket":6,"./store":7}],6:[function(require,module,exports){
+},{"./comp/about":1,"./comp/app":2,"./comp/flipper":3,"./comp/index":4,"./comp/table":5,"./socket":7,"./store":8}],7:[function(require,module,exports){
 'use strict';
 
 var _store = require('./store');
@@ -374,6 +506,7 @@ var _store2 = _interopRequireDefault(_store);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+// var store = require('./store')
 var socket = io();
 
 socket.on('client_list', function (client_list) {
@@ -429,7 +562,7 @@ $(document).on('click', '#nickname', function () {
     return false;
 });
 
-},{"./store":7}],7:[function(require,module,exports){
+},{"./store":8}],8:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -460,4 +593,4 @@ function clientList() {
 exports.default = (0, _redux.createStore)(clientList);
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}]},{},[5]);
+},{}]},{},[6]);

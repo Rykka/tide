@@ -32,7 +32,7 @@ gulp.task('browserify-js', function(done){
                                cache:{},
                                packageCache:{}})
                 .transform(stringify(['.html', '.tpl', '.svg']))
-                .transform("babelify", {presets: ["es2015"]})
+                .transform("babelify", {presets: [ "es2015" , "react"]})
                 .add(entry)
                 .bundle()
                 .on('error', function(err){
@@ -49,41 +49,42 @@ gulp.task('browserify-js', function(done){
 
 })
 
-gulp.task('browserify-jsx', function(done){
-
-    gutil.log('Bundle Browserify jsx')
-    // NOTE: ONLY Bundle the first dir of file.
-    glob('./client/js/*.js', function(err, files){
-
-        if (err) done(err);
-
-        var tasks = files.map(function(entry) {
-            return browserify({paths:['./client',
-                                    '../bower_components'],
-                               plugin:[watchify],
-                               cache:{},
-                               packageCache:{}})
-                .transform(stringify(['.html', '.tpl', '.svg']))
-                .transform("babelify", {presets: ["react"]})
-                .add(entry)
-                .bundle()
-                .on('error', function(err){
-                    gutil.log(err.message);
-                    // end this stream
-                    this.emit('end');
-                })
-                .pipe(source(path.basename(entry)))
-                .pipe(gulp.dest('../public/js'));
-            });
-        es.merge(tasks).on('end', done);
-
-    })
-
-})
-
-gulp.task('browserify', ['browserify-js', 'browserify-jsx'], function(){
+// gulp.task('browserify-jsx', function(done){
+//
+//     gutil.log('Bundle Browserify jsx')
+//     // NOTE: ONLY Bundle the first dir of file.
+//     glob('./client/js#<{(|.js', function(err, files){
+//
+//         if (err) done(err);
+//
+//         var tasks = files.map(function(entry) {
+//             return browserify({paths:['./client',
+//                                     '../bower_components'],
+//                                plugin:[watchify],
+//                                cache:{},
+//                                packageCache:{}})
+//                 .transform(stringify(['.html', '.tpl', '.svg']))
+//                 .transform("babelify", {presets: ["react"]})
+//                 .add(entry)
+//                 .bundle()
+//                 .on('error', function(err){
+//                     gutil.log(err.message);
+//                     // end this stream
+//                     this.emit('end');
+//                 })
+//                 .pipe(source(path.basename(entry)))
+//                 .pipe(gulp.dest('../public/js'));
+//             });
+//         es.merge(tasks).on('end', done);
+//
+//     })
+//
+// })
+//
+// gulp.task('browserify', ['browserify-js', 'browserify-jsx'], function(){
+gulp.task('browserify', ['browserify-js'], function(){
     gutil.log('Bundle Browserify')
 })
 
 watch_list.push([['client/js/**/*.js', 'client/js/**/*.tpl', 'client/js/**/*.svg'], ['browserify-js']])
-watch_list.push([['client/js/**/*.jsx', 'client/js/**/*.tpl', 'client/js/**/*.svg'], ['browserify-jsx']])
+// watch_list.push([['client/js#<{(||)}>#*.jsx', 'client/js#<{(||)}>#*.tpl', 'client/js#<{(||)}>#*.svg'], ['browserify-jsx']])

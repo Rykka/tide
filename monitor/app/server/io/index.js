@@ -59,7 +59,7 @@ module.exports = function(io) {
 
         socket.on('chat message', function(msg){
           console.log('message: ' + msg);
-          io.emit('chat message', msg);
+          io.emit('chat message', {msg:msg, uid:socket.id, name:socket.nickname, mid:new Date().getTime()+socket.id, type:1});
         });
 
         socket.on('change to nickname', function(_new){

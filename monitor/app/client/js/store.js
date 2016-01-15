@@ -8,6 +8,10 @@ function clientList(state = {client_list:[],messages:[]}, action) {
     return Object.assign({}, state, {client_list: action.state.client_list})
   case 'MESSAGE':
     return Object.assign({}, state, {messages: [...state.messages, action.message]})
+  case 'USER':
+      console.log('ACTION')
+      console.log(action.user)
+    return Object.assign({}, state, {user: action.user})
   default:
     return state
   }

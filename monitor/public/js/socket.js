@@ -1,6 +1,10 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 'use strict';
 
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
 var _store = require('./store');
 
 var _store2 = _interopRequireDefault(_store);
@@ -37,6 +41,7 @@ socket.on('setup', function (data) {
     console.log('current id:' + data.id);
     socket.nickname = data.nickname;
     socket.id = data.id;
+    _store2.default.dispatch({ type: 'USER', user: { id: data.id, name: data.nickname } });
 });
 
 socket.on('user connected', function (msg) {
@@ -51,17 +56,18 @@ socket.on('connect', function () {
     console.log('connect to server');
 });
 
-$(document).on('submit', 'form', function () {
-    socket.emit('chat message', $('#m').val());
-    $('#m').val('');
-    return false;
-});
+// $(document).on('submit', 'form', function(){
+//     socket.emit('chat message', $('#m').val());
+//     $('#m').val('');
+//     return false;
+// });
 
-$(document).on('click', '#nickname', function () {
-    console.log('click');
-    socket.emit('change to nickname', 'test1');
-    return false;
-});
+// $(document).on('click', '#nickname', function(){
+//     console.log('click')
+//     socket.emit('change to nickname', 'test1');
+//     return false;
+// });
+exports.default = socket;
 
 },{"./store":2}],2:[function(require,module,exports){
 (function (global){
@@ -86,6 +92,10 @@ function clientList() {
       return Object.assign({}, state, { client_list: action.state.client_list });
     case 'MESSAGE':
       return Object.assign({}, state, { messages: [].concat(_toConsumableArray(state.messages), [action.message]) });
+    case 'USER':
+      console.log('ACTION');
+      console.log(action.user);
+      return Object.assign({}, state, { user: action.user });
     default:
       return state;
   }

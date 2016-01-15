@@ -6,38 +6,31 @@ import { connect,Provider } from 'react-redux'
 
 import $ from 'jquery'
 
-import Table from './comp/table'
 import App from './comp/app'
 import Index from './comp/index'
 import About from './comp/about'
 import Flipper from './comp/flipper'
 
 import store from './store'
-import './socket'
+import socket from './socket'
 
-function selectCLIENT(state) {
+function selectMESSAGE(state) {
     return {
+        user: state.user,
+        messages: state.messages,
         client_list: state.client_list
     }
 }
-function selectMESSAGE(state) {
-    return {
-        messages: state.messages
-    }
-}
 
-
-var MYTABLE = connect(selectCLIENT)(Table)
 var MYINDEX = connect(selectMESSAGE)(Index)
 
 render((
     <Provider store={store}>
         <Router history={browserHistory}>
             <Route path="/" component={App}>
-              <IndexRoute component={MYTABLE} />
-              <Route path='/i' component={MYINDEX}/>
-              <Route path='/flipper' component={Flipper}/>
+              <IndexRoute component={MYINDEX}/>
               <Route path="/about" component={About}/>
+              <Route path='/flipper' component={Flipper}/>
             </Route>
         </Router>
     </Provider>

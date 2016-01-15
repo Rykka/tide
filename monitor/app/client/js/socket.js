@@ -30,6 +30,7 @@ socket.on('setup', function(data){
     console.log('current id:' + data.id)
     socket.nickname = data.nickname
     socket.id = data.id
+    store.dispatch({type:'USER', user:{id:data.id, name:data.nickname}})
 });
 
 socket.on('user connected', function(msg){
@@ -44,14 +45,15 @@ socket.on('connect', function(){
     console.log('connect to server')
 });
 
-$(document).on('submit', 'form', function(){
-    socket.emit('chat message', $('#m').val());
-    $('#m').val('');
-    return false;
-});
+// $(document).on('submit', 'form', function(){
+//     socket.emit('chat message', $('#m').val());
+//     $('#m').val('');
+//     return false;
+// });
 
-$(document).on('click', '#nickname', function(){
-    console.log('click')
-    socket.emit('change to nickname', 'test1');
-    return false;
-});
+// $(document).on('click', '#nickname', function(){
+//     console.log('click')
+//     socket.emit('change to nickname', 'test1');
+//     return false;
+// });
+export default socket

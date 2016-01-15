@@ -1,0 +1,51 @@
+#example {
+    background-color: red;
+    
+}
+.app {
+    background: #EBEAE8;
+}
+
+.nav {
+    display: block;
+    padding:5px;
+}
+
+.nav li {
+    display: inline-block;
+    margin: 2px 5px;
+}
+
+.sidebar {
+    border: red solid 1px;
+    position:fixed;
+    width: 90px;
+    right:3px;
+    top:0;
+    bottom:0;
+    padding: 4px; 
+    box-sizing:border-box;
+
+    ul {
+        padding: 0px; 
+    }
+    ul li {
+        list-style: none;
+        padding: 0px; 
+        margin: 4px 0;
+        span.user {
+            display: inline-block;
+            min-width: 76px;
+            line-height: 1.5;
+            padding: 2px;
+        }
+    }
+    .namelist {
+        button { 
+            background: @blue; 
+            border: none; 
+            padding: 2px;
+            min-width: 80px;
+        }
+    }
+}

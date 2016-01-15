@@ -39,7 +39,8 @@ var About = (function (_React$Component) {
           'h2',
           null,
           'About '
-        )
+        ),
+        'hello world'
       );
     }
   }]);
@@ -92,20 +93,15 @@ var App = (function (_React$Component) {
         'div',
         { className: 'app' },
         _react2.default.createElement(
-          'h1',
-          null,
-          'APP!'
-        ),
-        _react2.default.createElement(
           'ul',
-          { className: 'navigation' },
+          { className: 'nav' },
           _react2.default.createElement(
             'li',
             null,
             _react2.default.createElement(
               _reactRouter.IndexLink,
               { to: '/', activeStyle: ACTIVE },
-              '/ Table'
+              'Main '
             )
           ),
           _react2.default.createElement(
@@ -114,7 +110,7 @@ var App = (function (_React$Component) {
             _react2.default.createElement(
               _reactRouter.Link,
               { to: '/about', activeStyle: ACTIVE },
-              '/about'
+              'About'
             )
           ),
           _react2.default.createElement(
@@ -123,16 +119,7 @@ var App = (function (_React$Component) {
             _react2.default.createElement(
               _reactRouter.Link,
               { to: '/flipper', activeStyle: ACTIVE },
-              '/flipper'
-            )
-          ),
-          _react2.default.createElement(
-            'li',
-            null,
-            _react2.default.createElement(
-              _reactRouter.Link,
-              { to: '/i', activeStyle: ACTIVE },
-              '/I'
+              'Flipper'
             )
           )
         ),
@@ -246,17 +233,27 @@ exports.default = App;
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}],4:[function(require,module,exports){
 (function (global){
-"use strict";
+'use strict';
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+    value: true
 });
 
 var _react = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null);
 
 var _react2 = _interopRequireDefault(_react);
+
+var _reactRedux = (typeof window !== "undefined" ? window['ReactRedux'] : typeof global !== "undefined" ? global['ReactRedux'] : null);
+
+var _namelist = require('./namelist');
+
+var _namelist2 = _interopRequireDefault(_namelist);
+
+var _socket = require('../socket');
+
+var _socket2 = _interopRequireDefault(_socket);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -267,67 +264,74 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var Index = (function (_React$Component) {
-  _inherits(Index, _React$Component);
+    _inherits(Index, _React$Component);
 
-  function Index() {
-    _classCallCheck(this, Index);
+    function Index() {
+        _classCallCheck(this, Index);
 
-    return _possibleConstructorReturn(this, Object.getPrototypeOf(Index).apply(this, arguments));
-  }
-
-  _createClass(Index, [{
-    key: "render",
-    value: function render() {
-      var messages = this.props.messages;
-
-      console.log(messages);
-      return _react2.default.createElement(
-        "div",
-        null,
-        _react2.default.createElement(
-          "h2",
-          null,
-          "Index!"
-        ),
-        _react2.default.createElement(
-          "ul",
-          { id: "messages" },
-          messages.map(function (elem) {
-            return _react2.default.createElement(
-              "li",
-              { key: elem.mid },
-              elem.name,
-              " : ",
-              elem.msg
-            );
-          })
-        ),
-        _react2.default.createElement(
-          "form",
-          { action: "" },
-          _react2.default.createElement("input", { id: "m", autoComplete: "off" }),
-          _react2.default.createElement(
-            "button",
-            null,
-            "Send"
-          )
-        ),
-        _react2.default.createElement(
-          "button",
-          { id: "nickname" },
-          "NICK"
-        )
-      );
+        return _possibleConstructorReturn(this, Object.getPrototypeOf(Index).apply(this, arguments));
     }
-  }]);
 
-  return Index;
+    _createClass(Index, [{
+        key: 'sendMessage',
+        value: function sendMessage(e) {
+            e.preventDefault();
+            var node = this.refs.input;
+            var text = node.value.trim();
+            _socket2.default.emit('chat message', text);
+            node.value = '';
+            return false;
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            var _props = this.props;
+            var messages = _props.messages;
+            var client_list = _props.client_list;
+            var user = _props.user;
+
+            return _react2.default.createElement(
+                'div',
+                null,
+                _react2.default.createElement(
+                    'div',
+                    { className: 'sidebar' },
+                    _react2.default.createElement(_namelist2.default, { client_list: client_list, cur_user: user })
+                ),
+                _react2.default.createElement(
+                    'ul',
+                    { id: 'messages' },
+                    messages.map(function (elem) {
+                        return _react2.default.createElement(
+                            'li',
+                            { key: elem.mid },
+                            elem.name,
+                            ' : ',
+                            elem.msg
+                        );
+                    })
+                ),
+                _react2.default.createElement(
+                    'form',
+                    { onSubmit: this.sendMessage.bind(this) },
+                    _react2.default.createElement('input', { type: 'text', ref: 'input' }),
+                    _react2.default.createElement(
+                        'button',
+                        null,
+                        'Send'
+                    )
+                )
+            );
+        }
+    }]);
+
+    return Index;
 })(_react2.default.Component);
 
 exports.default = Index;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],5:[function(require,module,exports){
+},{"../socket":7,"./namelist":5}],5:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -341,6 +345,10 @@ var _react = (typeof window !== "undefined" ? window['React'] : typeof global !=
 
 var _react2 = _interopRequireDefault(_react);
 
+var _socket = require('../socket');
+
+var _socket2 = _interopRequireDefault(_socket);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -349,77 +357,71 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var Table = (function (_React$Component) {
-    _inherits(Table, _React$Component);
+var NameList = (function (_React$Component) {
+    _inherits(NameList, _React$Component);
 
-    function Table() {
-        _classCallCheck(this, Table);
+    function NameList() {
+        _classCallCheck(this, NameList);
 
-        return _possibleConstructorReturn(this, Object.getPrototypeOf(Table).apply(this, arguments));
+        return _possibleConstructorReturn(this, Object.getPrototypeOf(NameList).apply(this, arguments));
     }
 
-    _createClass(Table, [{
+    _createClass(NameList, [{
+        key: 'changeName',
+        value: function changeName() {
+            var name = prompt('Please Input Your Name');
+            if (name) {
+                _socket2.default.emit('change to nickname', name);
+            } else {
+                alert('You need a valid name');
+            }
+        }
+    }, {
         key: 'render',
         value: function render() {
-            var client_list = this.props.client_list;
+            var _props = this.props;
+            var client_list = _props.client_list;
+            var cur_user = _props.cur_user;
 
             return _react2.default.createElement(
                 'div',
-                null,
+                { className: 'namelist' },
+                _react2.default.createElement(
+                    'ul',
+                    null,
+                    client_list.map(function (client, index) {
+                        return _react2.default.createElement(
+                            'li',
+                            { key: client.id },
+                            _react2.default.createElement(
+                                'span',
+                                { className: 'user', id: client.id, style: cur_user.id == client.id ? { background: '#c77' } : { background: '#99a' } },
+                                client.nickname
+                            )
+                        );
+                    })
+                ),
+                _react2.default.createElement(
+                    'button',
+                    { id: 'nickname', onClick: this.changeName },
+                    cur_user ? cur_user.name : 'NICK'
+                ),
                 _react2.default.createElement(
                     'button',
                     null,
-                    'List'
-                ),
-                _react2.default.createElement(
-                    'table',
-                    null,
-                    _react2.default.createElement(
-                        'tbody',
-                        null,
-                        _react2.default.createElement(
-                            'tr',
-                            null,
-                            _react2.default.createElement(
-                                'th',
-                                null,
-                                'ID'
-                            ),
-                            _react2.default.createElement(
-                                'th',
-                                null,
-                                'NICKNAME'
-                            )
-                        ),
-                        client_list.map(function (client, index) {
-                            return _react2.default.createElement(
-                                'tr',
-                                { key: client.id },
-                                _react2.default.createElement(
-                                    'td',
-                                    null,
-                                    client.id
-                                ),
-                                _react2.default.createElement(
-                                    'td',
-                                    null,
-                                    client.nickname
-                                )
-                            );
-                        })
-                    )
+                    'REFRESH'
                 )
             );
         }
     }]);
 
-    return Table;
+    return NameList;
 })(_react2.default.Component);
 
-exports.default = Table;
+exports.default = NameList;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],6:[function(require,module,exports){
+},{"../socket":7}],6:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -436,10 +438,6 @@ var _reactRedux = (typeof window !== "undefined" ? window['ReactRedux'] : typeof
 var _jquery = (typeof window !== "undefined" ? window['$'] : typeof global !== "undefined" ? global['$'] : null);
 
 var _jquery2 = _interopRequireDefault(_jquery);
-
-var _table = require('./comp/table');
-
-var _table2 = _interopRequireDefault(_table);
 
 var _app = require('./comp/app');
 
@@ -461,22 +459,20 @@ var _store = require('./store');
 
 var _store2 = _interopRequireDefault(_store);
 
-require('./socket');
+var _socket = require('./socket');
+
+var _socket2 = _interopRequireDefault(_socket);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function selectCLIENT(state) {
+function selectMESSAGE(state) {
     return {
+        user: state.user,
+        messages: state.messages,
         client_list: state.client_list
     };
 }
-function selectMESSAGE(state) {
-    return {
-        messages: state.messages
-    };
-}
 
-var MYTABLE = (0, _reactRedux.connect)(selectCLIENT)(_table2.default);
 var MYINDEX = (0, _reactRedux.connect)(selectMESSAGE)(_index2.default);
 
 (0, _reactDom.render)(_react2.default.createElement(
@@ -488,17 +484,20 @@ var MYINDEX = (0, _reactRedux.connect)(selectMESSAGE)(_index2.default);
         _react2.default.createElement(
             _reactRouter.Route,
             { path: '/', component: _app2.default },
-            _react2.default.createElement(_reactRouter.IndexRoute, { component: MYTABLE }),
-            _react2.default.createElement(_reactRouter.Route, { path: '/i', component: MYINDEX }),
-            _react2.default.createElement(_reactRouter.Route, { path: '/flipper', component: _flipper2.default }),
-            _react2.default.createElement(_reactRouter.Route, { path: '/about', component: _about2.default })
+            _react2.default.createElement(_reactRouter.IndexRoute, { component: MYINDEX }),
+            _react2.default.createElement(_reactRouter.Route, { path: '/about', component: _about2.default }),
+            _react2.default.createElement(_reactRouter.Route, { path: '/flipper', component: _flipper2.default })
         )
     )
 ), (0, _jquery2.default)('#example').get(0));
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./comp/about":1,"./comp/app":2,"./comp/flipper":3,"./comp/index":4,"./comp/table":5,"./socket":7,"./store":8}],7:[function(require,module,exports){
+},{"./comp/about":1,"./comp/app":2,"./comp/flipper":3,"./comp/index":4,"./socket":7,"./store":8}],7:[function(require,module,exports){
 'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
 
 var _store = require('./store');
 
@@ -536,6 +535,7 @@ socket.on('setup', function (data) {
     console.log('current id:' + data.id);
     socket.nickname = data.nickname;
     socket.id = data.id;
+    _store2.default.dispatch({ type: 'USER', user: { id: data.id, name: data.nickname } });
 });
 
 socket.on('user connected', function (msg) {
@@ -550,17 +550,18 @@ socket.on('connect', function () {
     console.log('connect to server');
 });
 
-$(document).on('submit', 'form', function () {
-    socket.emit('chat message', $('#m').val());
-    $('#m').val('');
-    return false;
-});
+// $(document).on('submit', 'form', function(){
+//     socket.emit('chat message', $('#m').val());
+//     $('#m').val('');
+//     return false;
+// });
 
-$(document).on('click', '#nickname', function () {
-    console.log('click');
-    socket.emit('change to nickname', 'test1');
-    return false;
-});
+// $(document).on('click', '#nickname', function(){
+//     console.log('click')
+//     socket.emit('change to nickname', 'test1');
+//     return false;
+// });
+exports.default = socket;
 
 },{"./store":8}],8:[function(require,module,exports){
 (function (global){
@@ -585,6 +586,10 @@ function clientList() {
       return Object.assign({}, state, { client_list: action.state.client_list });
     case 'MESSAGE':
       return Object.assign({}, state, { messages: [].concat(_toConsumableArray(state.messages), [action.message]) });
+    case 'USER':
+      console.log('ACTION');
+      console.log(action.user);
+      return Object.assign({}, state, { user: action.user });
     default:
       return state;
   }

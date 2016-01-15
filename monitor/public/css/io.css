@@ -1,5 +1,5 @@
 form {
-  background: #666;
+  background: #CACACA;
   padding: 3px;
   position: fixed;
   bottom: 0;
@@ -14,7 +14,7 @@ form input {
 }
 form button {
   width: 9.5%;
-  background: #82e0ff;
+  background: #bee0ff;
   border: none;
   padding: 10px;
 }

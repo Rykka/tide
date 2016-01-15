@@ -21,6 +21,10 @@ function clientList() {
       return Object.assign({}, state, { client_list: action.state.client_list });
     case 'MESSAGE':
       return Object.assign({}, state, { messages: [].concat(_toConsumableArray(state.messages), [action.message]) });
+    case 'USER':
+      console.log('ACTION');
+      console.log(action.user);
+      return Object.assign({}, state, { user: action.user });
     default:
       return state;
   }

@@ -5,6 +5,10 @@ var plumber = require('gulp-plumber');
 var gutil = require("gulp-util");
 var watch_list = require('gulp/config').watch_list
 
+var postcss      = require('gulp-postcss');
+var autoprefixer = require('autoprefixer');
+
+
 gulp.task('less', function () {
 
     gutil.log('Compile less');
@@ -13,8 +17,9 @@ gulp.task('less', function () {
     return gulp.src('./client/css/**/*.less')
         .pipe(plumber())
         .pipe(less({
-            paths: [ path.join(__dirname, '..', '..','app', 'client', 'css', 'includes') ]
+            paths: [ path.join(__dirname, '..', '..','app', 'client', 'css', 'includes'), path.join(__dirname, '..', '..','app', 'client', 'js')  ]
         }))
+        .pipe(postcss([ autoprefixer({ browsers: ['last 2 versions'] }) ]))
         .on('error', function(err){
             gutil.log(err)
             this.emit('end')
@@ -23,4 +28,4 @@ gulp.task('less', function () {
 
 });
 
-watch_list.push(['client/css/**/*.less', ['less']])
+watch_list.push(['client/**/*.less', ['less']])

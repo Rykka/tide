@@ -5,15 +5,16 @@ form {
   bottom: 0;
   width: 100%;
   margin-bottom: 0;
+  right: 90px;
 }
 form input {
   border: 0;
   padding: 10px;
-  width: 90%;
-  margin-right: .5%;
+  width: 100%;
+  margin-right: -80px;
 }
 form button {
-  width: 9.5%;
+  width: 80px;
   background: #bee0ff;
   border: none;
   padding: 10px;

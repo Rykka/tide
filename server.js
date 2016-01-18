@@ -64,7 +64,6 @@ server.on('error', function(err){
     monitor.log(err)
 })
 
-
 var cluster = require('cluster');
 var numCPUs = require('os').cpus().length;
 
@@ -95,7 +94,6 @@ if (cluster.isMaster) {
 
     }
 
-
     function getRandomInt(min, max) {
       return Math.floor(Math.random() * (max - min)) + min;
     }
@@ -115,7 +113,6 @@ if (cluster.isMaster) {
         // k.kill()
         k.send('shutdown')
     }, 3500);
-
 } else {
     console.log('WORKER')
     new Child(process.env.START_PORT)
@@ -127,4 +124,3 @@ if (cluster.isMaster) {
             }
     })
 }
-

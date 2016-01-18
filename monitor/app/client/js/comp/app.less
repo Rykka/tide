@@ -2,6 +2,11 @@
     background-color: red;
     
 }
+
+                *:focus {
+                    // border: 3px solid red;
+                    outline:none;
+                }
 .app {
     background: #EBEAE8;
 }
@@ -17,14 +22,16 @@
 }
 
 .sidebar {
-    border: red solid 1px;
+    // border: red solid 1px;
+    background-color: #EBEAE8;
     position:fixed;
     width: 90px;
-    right:3px;
+    right:0px;
     top:0;
     bottom:0;
     padding: 4px; 
     box-sizing:border-box;
+    z-index:50;
 
     ul {
         padding: 0px; 
@@ -41,11 +48,34 @@
         }
     }
     .namelist {
-        button { 
-            background: @blue; 
-            border: none; 
-            padding: 2px;
-            min-width: 80px;
+        .btn-nav {
+            text-align: center;
+            background-color: #999;
+            button { 
+                background: @blue; 
+                border: none; 
+                padding: 2px 5px;
+                margin: 3px 2px;
+                border-radius: 4px;
+                // min-width: 80px;
+            }
+        }
+    }
+}
+
+
+.game {
+    .player {
+        display: inline-block;
+        margin: 5px 10px;
+        .name {
+            display: block;
+            color: #888;
+            padding:4px;
+        }
+        .hp, .mp {
+            display: inline-block;
+            margin: 4px;
         }
     }
 }

@@ -360,15 +360,16 @@ form {
   bottom: 0;
   width: 100%;
   margin-bottom: 0;
+  right: 90px;
 }
 form input {
   border: 0;
   padding: 10px;
-  width: 90%;
-  margin-right: .5%;
+  width: 100%;
+  margin-right: -80px;
 }
 form button {
-  width: 9.5%;
+  width: 80px;
   background: #bee0ff;
   border: none;
   padding: 10px;
@@ -466,6 +467,9 @@ form button {
 #example {
   background-color: red;
 }
+*:focus {
+  outline: none;
+}
 .app {
   background: #EBEAE8;
 }
@@ -478,14 +482,15 @@ form button {
   margin: 2px 5px;
 }
 .sidebar {
-  border: red solid 1px;
+  background-color: #EBEAE8;
   position: fixed;
   width: 90px;
-  right: 3px;
+  right: 0px;
   top: 0;
   bottom: 0;
   padding: 4px;
   box-sizing: border-box;
+  z-index: 50;
 }
 .sidebar ul {
   padding: 0px;
@@ -501,9 +506,28 @@ form button {
   line-height: 1.5;
   padding: 2px;
 }
-.sidebar .namelist button {
+.sidebar .namelist .btn-nav {
+  text-align: center;
+  background-color: #999;
+}
+.sidebar .namelist .btn-nav button {
   background: #bee0ff;
   border: none;
-  padding: 2px;
-  min-width: 80px;
+  padding: 2px 5px;
+  margin: 3px 2px;
+  border-radius: 4px;
+}
+.game .player {
+  display: inline-block;
+  margin: 5px 10px;
+}
+.game .player .name {
+  display: block;
+  color: #888;
+  padding: 4px;
+}
+.game .player .hp,
+.game .player .mp {
+  display: inline-block;
+  margin: 4px;
 }

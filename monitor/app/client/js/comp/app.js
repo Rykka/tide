@@ -8,7 +8,7 @@ class App extends React.Component {
         return (
           <div className='app'>
             <ul className='nav'>
-              <li><IndexLink to="/" activeStyle={ACTIVE}>Main </IndexLink></li>
+              <li><IndexLink to="/" activeStyle={ACTIVE}>Main</IndexLink></li>
               <li><Link to="/about" activeStyle={ACTIVE}>About</Link></li>
               <li><Link to="/flipper" activeStyle={ACTIVE}>Flipper</Link></li>
             </ul>

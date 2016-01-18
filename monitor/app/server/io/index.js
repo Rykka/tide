@@ -1,78 +1,108 @@
 module.exports = function(io) {
 
-    // function findClientsSocket(roomId, namespace) {
-    //     var res = []
-    //     , ns = io.of(namespace ||"/");    // the default namespace is "/"
-    //
-    //     if (ns) {
-    //         for (var id in ns.connected) {
-    //             if(roomId) {
-    //                 var index = ns.connected[id].rooms.indexOf(roomId) ;
-    //                 if(index !== -1) {
-    //                     res.push(ns.connected[id]);
-    //                 }
-    //             } else {
-    //                 res.push(ns.connected[id]);
-    //             }
-    //         }
-    //     }
-    //     return res;
-    // }
-
+    Object.defineProperty(Object.prototype, 'map', {
+        value: function(f, ctx) {
+            ctx = ctx || this;
+            var self = this, result = {};
+            Object.keys(self).forEach(function(k) {
+                // result.push(f.call(ctx, self[k], k, self)); 
+                result[k] = f.call(ctx, self[k], k, self);
+            });
+            return result;
+        }
+    });
     function getClientList() {
 
-        // var clients = findClientsSocket();
-        // var clients_list=[];
-        //
-        // for (var i=0; i<clients.length; i++) {
-        //     console.log(clients[i].id)
-        //     console.log(clients[i].name)
-        //     clients_list.push(clients[i].id)
-        // }
-        // return clients_list
-
         return io.sockets.sockets.map(function(s) {
-            return {nickname:s.nickname, id:s.id};
+            return {name:s.name, id:s.id};
         })
-
+    }
+    function getSocketById(id){
+        return io.sockets.sockets[id]
     }
 
     io.on('connection', function(socket){
 
-        socket.nickname = Math.floor(Math.random() * 10000)
-        // socket.set('nickname', socket.nickname)
-        console.log(socket.nickname)
+        socket.name = Math.floor(Math.random() * 10000)
+        // socket.set('name', socket.name)
+        // console.log(socket.name)
 
-        io.emit('user connected', socket.nickname)
+        io.emit('user connected', socket.name)
 
         socket.emit('setup', {
             id: socket.id,
-            nickname: socket.nickname
+            name: socket.name
         })
+        var _player ={id:socket.id, name:socket.name}
 
         io.emit('client_list', getClientList())
+        socket.on('get client list',function(){
+            io.emit('client_list', getClientList())
+        } )
 
         socket.on('disconnect', function(){
-            io.emit('user disconnected', socket.nickname);
+            io.emit('user disconnected', socket.name);
             io.emit('client_list', getClientList())
         });
 
         socket.on('chat message', function(msg){
           console.log('message: ' + msg);
-          io.emit('chat message', {msg:msg, uid:socket.id, name:socket.nickname, mid:new Date().getTime()+socket.id, type:1});
+          io.emit('chat message', {msg:msg, uid:socket.id, name:socket.name, mid:new Date().getTime()+socket.id, type:1});
         });
 
-        socket.on('change to nickname', function(_new){
+        socket.on('change to name', function(_new){
 
-              console.log('nickname: ' + _new);
+              console.log('name: ' + _new);
 
-              var _old = socket.nickname
-              socket.nickname = _new
-              io.emit('nickname changed', {from:_old, to:_new});
+              var _old = socket.name
+              socket.name = _new
+              io.emit('name changed', {from:_old, to:_new});
               setTimeout(function() {  
                   io.emit('client_list', getClientList())
               }, 20);
         });
+        socket.on('invite game', function(g){
+            console.log(g)
+            console.log(socket.id)
+
+            var _s = getSocketById(g.to.id)
+            _s.emit('invite game by', g.from)
+            // }
+        })
+        socket.on('accept game', function(from){
+            var _s = getSocketById(from.id)
+            socket.emit('start game with', {from:from, to:{id:socket.id, name:socket.name}})
+            _s.emit('start game with', {from:from, to:{id:socket.id, name:socket.name}})
+
+
+            var room_id = 'game room ' + Math.floor(Math.random() * 50000)
+
+
+            io.to(room_id).emit('hello', room_id)
+            socket.join(room_id)
+            _s.join(room_id)
+            io.to(room_id).emit('join room', _player)
+            io.to(room_id).emit('join room', from)
+
+            if (_s.is_in_game || socket.is_in_game) {
+                return console.log('User already in a game')
+            }
+
+            var Game = require('../game')
+            var Player = require('../game/player')
+
+            var p1 = new Player(_s) // from
+            var p2 = new Player(socket) // to
+
+            var g1 = new Game(p1, p2, 0, io.to(room_id))
+
+            g1.start()
+
+        })
+        socket.on('reject game', function(from){
+            var _s = getSocketById(from.id)
+            _s.emit('game reject by', {id:socket.id, name:socket.name})
+        })
 
     })
 }

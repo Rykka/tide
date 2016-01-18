@@ -17,6 +17,7 @@ import socket from './socket'
 function selectMESSAGE(state) {
     return {
         user: state.user,
+        game: state.game,
         messages: state.messages,
         client_list: state.client_list
     }

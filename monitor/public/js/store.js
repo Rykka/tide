@@ -14,17 +14,15 @@ function clientList() {
   var state = arguments.length <= 0 || arguments[0] === undefined ? { client_list: [], messages: [] } : arguments[0];
   var action = arguments[1];
 
-  console.log('STATE');
-  console.log(state);
   switch (action.type) {
     case 'CLIENT':
       return Object.assign({}, state, { client_list: action.state.client_list });
     case 'MESSAGE':
       return Object.assign({}, state, { messages: [].concat(_toConsumableArray(state.messages), [action.message]) });
     case 'USER':
-      console.log('ACTION');
-      console.log(action.user);
       return Object.assign({}, state, { user: action.user });
+    case 'GAME':
+      return Object.assign({}, state, { game: action.game });
     default:
       return state;
   }

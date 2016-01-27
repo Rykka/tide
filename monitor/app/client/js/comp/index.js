@@ -94,7 +94,7 @@ class Index extends React.Component {
               })}
           </ul>
 
-          <form onSubmit={this.sendMessage.bind(this)}>
+          <form className='messages' onSubmit={this.sendMessage.bind(this)}>
               <input type="text" ref='input'/>
               <button>Send</button>
           </form>

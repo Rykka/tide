@@ -353,22 +353,27 @@ td,
 th {
   padding: 0;
 }
-form {
+form.messages {
   background: #CACACA;
   padding: 3px;
   position: fixed;
   bottom: 0;
-  width: 100%;
   margin-bottom: 0;
   right: 90px;
+  left: 0;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
 }
-form input {
+form.messages input {
   border: 0;
   padding: 10px;
-  width: 100%;
-  margin-right: -80px;
+  margin-right: 5px;
+  -webkit-flex: auto;
+      -ms-flex: auto;
+          flex: auto;
 }
-form button {
+form.messages button {
   width: 80px;
   background: #bee0ff;
   border: none;
@@ -376,14 +381,21 @@ form button {
 }
 #messages {
   list-style-type: none;
+  position: absolute;
   margin: 0;
   padding: 0;
+  top: 200px;
+  bottom: 80px;
+  left: 0;
+  right: 90px;
+  overflow-y: scroll;
+  border: 1px solid red;
 }
 #messages li {
   padding: 5px 10px;
 }
 #messages li:nth-child(odd) {
-  background: #eee;
+  background: #E3E3E3;
 }
 .flipper-container {
   float: left;

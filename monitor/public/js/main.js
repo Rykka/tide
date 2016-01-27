@@ -415,7 +415,7 @@ var Index = function (_React$Component) {
                 ),
                 _react2.default.createElement(
                     'form',
-                    { onSubmit: this.sendMessage.bind(this) },
+                    { className: 'messages', onSubmit: this.sendMessage.bind(this) },
                     _react2.default.createElement('input', { type: 'text', ref: 'input' }),
                     _react2.default.createElement(
                         'button',
@@ -723,7 +723,8 @@ socket.on('choose method', function () {
 });
 
 socket.on('log', function (msg) {
-    console.log(msg);
+    var message = { msg: msg, uid: socket.id, name: 'logging', mid: new Date().getTime() + socket.id, type: 1 };
+    _store2.default.dispatch({ type: 'MESSAGE', message: message });
 });
 
 socket.on('game status', function (stats) {

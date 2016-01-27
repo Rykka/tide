@@ -93,7 +93,8 @@ socket.on('choose method', function () {
 });
 
 socket.on('log', function (msg) {
-    console.log(msg);
+    var message = { msg: msg, uid: socket.id, name: 'logging', mid: new Date().getTime() + socket.id, type: 1 };
+    _store2.default.dispatch({ type: 'MESSAGE', message: message });
 });
 
 socket.on('game status', function (stats) {

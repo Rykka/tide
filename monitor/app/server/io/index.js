@@ -5,7 +5,7 @@ module.exports = function(io) {
             ctx = ctx || this;
             var self = this, result = {};
             Object.keys(self).forEach(function(k) {
-                // result.push(f.call(ctx, self[k], k, self)); 
+                // result.push(f.call(ctx, self[k], k, self));
                 result[k] = f.call(ctx, self[k], k, self);
             });
             return result;
@@ -57,7 +57,7 @@ module.exports = function(io) {
               var _old = socket.name
               socket.name = _new
               io.emit('name changed', {from:_old, to:_new});
-              setTimeout(function() {  
+              setTimeout(function() {
                   io.emit('client_list', getClientList())
               }, 20);
         });
@@ -70,6 +70,7 @@ module.exports = function(io) {
             // }
         })
         socket.on('accept game', function(from){
+            // from is the user from
             var _s = getSocketById(from.id)
             socket.emit('start game with', {from:from, to:{id:socket.id, name:socket.name}})
             _s.emit('start game with', {from:from, to:{id:socket.id, name:socket.name}})
@@ -77,12 +78,25 @@ module.exports = function(io) {
 
             var room_id = 'game room ' + Math.floor(Math.random() * 50000)
 
-
-            io.to(room_id).emit('hello', room_id)
-            socket.join(room_id)
-            _s.join(room_id)
-            io.to(room_id).emit('join room', _player)
-            io.to(room_id).emit('join room', from)
+            var room = {
+                id: room_id,
+                users: [_s, socket],
+                emit: function(type, msg){
+                    console.log('msg:' + msg)
+                    this.users.forEach(function(user){
+                        console.log('ok')
+                        user.emit(type, msg)
+                    })
+                }
+            }
+            // XXX:
+            // The io's default room will emit error.
+            // io.to(room_id).emit('hello', room_id)
+            // socket.join(room_id)
+            // _s.join(room_id)
+            room.emit('join room', _player)
+            room.emit('join room', from)
+            console.log('emittttt')
 
             if (_s.is_in_game || socket.is_in_game) {
                 return console.log('User already in a game')
@@ -94,7 +108,7 @@ module.exports = function(io) {
             var p1 = new Player(_s) // from
             var p2 = new Player(socket) // to
 
-            var g1 = new Game(p1, p2, 0, io.to(room_id))
+            var g1 = new Game(p1, p2, 0, room)
 
             g1.start()
 

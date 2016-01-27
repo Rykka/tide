@@ -82,12 +82,13 @@ socket.on('choose method', function(){
 })
 
 socket.on('log', function(msg){
-    console.log(msg)
+    var message = {msg:msg, uid:socket.id, name:'logging', mid:new Date().getTime()+socket.id, type:1}
+    store.dispatch({type:'MESSAGE', message:message})
 })
 
-        socket.on('game status', function(stats){
-            store.dispatch({type:'GAME', game:stats})
-        })
+socket.on('game status', function(stats){
+    store.dispatch({type:'GAME', game:stats})
+})
 // $(document).on('submit', 'form', function(){
 //     socket.emit('chat message', $('#m').val());
 //     $('#m').val('');

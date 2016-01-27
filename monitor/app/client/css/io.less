@@ -1,8 +1,35 @@
 @import 'var';
 
-form { background: @gray; padding: 3px; position: fixed; bottom: 0; width: 100%; margin-bottom:0; right:90px;}
-form input { border: 0; padding: 10px; width:100%;margin-right:-80px;}
-form button { width: 80px; background: @blue; border: none; padding: 10px; }
-#messages { list-style-type: none; margin: 0; padding: 0; }
-#messages li { padding: 5px 10px; }
-#messages li:nth-child(odd) { background: #eee; }
+form.messages { 
+    background: @gray; 
+    padding: 3px; 
+    position: fixed; 
+    bottom: 0;  
+    margin-bottom:0;
+    // width:100%;
+    right:90px;
+    left:0;
+    display: flex;
+}
+
+form.messages input { border: 0; padding: 10px; margin-right:5px; flex:auto;}
+form.messages button { width: 80px; background: @blue; border: none; padding: 10px;}
+
+#messages { 
+    list-style-type: none; 
+    position:absolute;
+    margin: 0; 
+    padding: 0; 
+    top:200px;
+    bottom:80px;
+    left:0;
+    right:90px;
+    overflow-y:scroll;
+    border:1px solid red;
+}
+#messages li { 
+    padding: 5px 10px; 
+}
+#messages li:nth-child(odd) { 
+    background: #E3E3E3; 
+}
